@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { ThumbUpIcon, ThumbDownIcon } from "@heroicons/react/outline";
-import TextForm from "../textForm";
 import type { getDeliveryRatingCreatorProps } from "../../../reducer/reviewReducer";
 
-type DeliveryRatingFromProps = {
+import { ThumbUpIcon, ThumbDownIcon } from "@heroicons/react/outline";
+import TextForm from "../textForm";
+
+type DeliveryRatingFormProps = {
   onSaveDeliveryRating: (rating: getDeliveryRatingCreatorProps) => void;
 };
 
-const DeliveryRatingForm: React.FC<DeliveryRatingFromProps> = ({
+const DeliveryRatingForm: React.FC<DeliveryRatingFormProps> = ({
   onSaveDeliveryRating,
 }) => {
   const [isSatisfied, setIsSatisfied] = useState(true);

@@ -15,7 +15,7 @@ const OrderedProducts = ({
           <>
             <Divider />
             <ProductCard
-              key={singleProduct.itemId.toString()}
+              key={singleProduct.name}
               title={singleProduct.name}
               imgUrl={singleProduct.imgURL}
               price={singleProduct.price}

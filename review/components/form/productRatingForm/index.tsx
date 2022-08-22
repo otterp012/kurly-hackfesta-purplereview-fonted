@@ -1,4 +1,3 @@
-import React, { useEffect, useState } from "react";
 import RatingValue from "./ratingValue";
 import type { getProductRatingCreatorProps } from "../../../reducer/reviewReducer";
 
@@ -24,7 +23,7 @@ const ProductRatingForm: React.FC<RatingProps> = ({
       <form className='daisy-rating mt-5 w-full flex justify-center daisy-rating-lg pb-10'>
         {productRatingConstants.map((value) => (
           <RatingValue
-            key={`star-${value}`}
+            key={value}
             onChangeHandler={ratingOnChangeHandler}
             num={value}
           />

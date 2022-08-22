@@ -33,6 +33,7 @@ const Review = ({
     console.log(review);
     console.log(detailReviewResult);
   }, [review, detailReviewResult]);
+
   const { getProductRatingCreator, getDeliveryRatingCreator } = reviewActions;
   const { imgURL, name, price, discountPrice, itemId, questionList } = curData;
   const onSaveProductRating = useCallback(
@@ -52,15 +53,14 @@ const Review = ({
   };
   return (
     <Layout>
-      <div>
-        <ProductCard
-          title={name}
-          imgUrl={imgURL}
-          price={price}
-          discountPrice={discountPrice}
-          slug={itemId.toString()}
-        />
-      </div>
+      <ProductCard
+        title={name}
+        imgUrl={imgURL}
+        price={price}
+        discountPrice={discountPrice}
+        slug={itemId.toString()}
+      />
+
       <div className='bg-[#f3f4f6] px-3 py-5 w-full flex flex-col'>
         <ProductRatingForm
           onSaveProductRating={onSaveProductRating}
@@ -136,38 +136,3 @@ export const getStaticProps: GetStaticProps = async (context) => {
     },
   };
 };
-// export const getStaticPaths = async () => {
-//   const data = await fetch(
-//     "https://practive-a11a9-default-rtdb.firebaseio.com/.json",
-//   );
-//   const productData = await data.json();
-//   const paths = productData.map(({ id }: FetchedProductData) => {
-//     return {
-//       params: {
-//         slug: id.toString(),
-//       },
-//     };
-//   });
-
-//   return {
-//     paths,
-//     fallback: false,
-//   };
-// };
-
-// export const getStaticProps: GetStaticProps = async (context) => {
-//   const { slug } = context.params as Params;
-//   const data = await fetch(
-//     "https://practive-a11a9-default-rtdb.firebaseio.com/.json",
-//   );
-//   const productData = await data.json();
-//   const curProductData = productData.find(
-//     ({ id }: FetchedProductData) => id.toString() === slug,
-//   );
-
-//   return {
-//     props: {
-//       curProductData,
-//     },
-//   };
-// };

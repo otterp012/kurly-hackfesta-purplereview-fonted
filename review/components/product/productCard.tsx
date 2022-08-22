@@ -18,6 +18,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
   slug,
 }) => {
   const { pathname } = useRouter();
+
   return (
     <>
       <Link href={`/productDetail/${slug}`} passHref>
@@ -47,7 +48,6 @@ const ProductCard: React.FC<ProductCardProps> = ({
                     {discountPrice.toLocaleString("ko-kr")}원
                   </span>
                 )}
-
                 <span className='text-xs ml-2 border-l pl-2 text-gray-500'>
                   1개
                 </span>

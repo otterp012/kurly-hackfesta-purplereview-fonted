@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { getDeliveryRatingCreatorProps } from "../../../reducer/reviewReducer";
+
 import TextForm from "../textForm";
 import Question from "./question";
 
@@ -18,6 +18,7 @@ export type ReviewResult = {
   keywordReviews: KeywordReviewObj[];
   itemContent: string;
 };
+
 const DetailReviewForm = ({
   questions,
   onSaveDetailReview,
@@ -34,7 +35,7 @@ const DetailReviewForm = ({
 
   const onSaveAnswerByQuestion = (questionId: number, value: string) => {
     let isAlreadySelected = keywordReviews.findIndex(
-      (v) => v.questionId === questionId,
+      (keywordReview) => keywordReview.questionId === questionId,
     );
 
     setKeywordReviews((prev) => {

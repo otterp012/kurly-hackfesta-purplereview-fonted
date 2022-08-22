@@ -7,7 +7,12 @@ type ProductDetailProps = {
   discountPrice: number;
 };
 
-const Product = ({ img, title, price, discountPrice }: ProductDetailProps) => {
+const Product: React.FC<ProductDetailProps> = ({
+  img,
+  title,
+  price,
+  discountPrice,
+}) => {
   return (
     <section className='w-full h-100'>
       <div className='w-full h-80 px-2 py-3'>
@@ -38,4 +43,5 @@ const Product = ({ img, title, price, discountPrice }: ProductDetailProps) => {
     </section>
   );
 };
+
 export default Product;
