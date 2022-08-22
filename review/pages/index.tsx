@@ -2,9 +2,7 @@ import type { NextPage } from "next";
 import Link from "next/link";
 import BigLogo from "../components/layout/bigLogo";
 import Layout from "../components/layout/layout";
-// import Logo from "../public/Logo.svg";
-import Logo from "../components/layout/logo";
-// import Logo from "../public/logo_white.svg";
+
 const Home: NextPage = () => {
   return (
     <Layout>

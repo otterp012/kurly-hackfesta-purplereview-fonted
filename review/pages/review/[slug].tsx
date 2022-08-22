@@ -1,9 +1,13 @@
-import Layout from "../../components/layout/layout";
 import { useCallback, useReducer, useState } from "react";
-import { BEAUTY } from "../../constants/constants";
+import type { Params, FetchedProductData } from "../../types/types";
+import type { GetStaticProps, InferGetStaticPropsType } from "next/types";
+
+import Layout from "../../components/layout/layout";
 import ProductRatingForm from "../../components/form/productRatingForm/index";
 import DeliveryRatingForm from "../../components/form/deliveryRatingForm";
 import DetailReviewForm from "../../components/form/detailReviewForm";
+import ProductCard from "../../components/product/productCard";
+
 import {
   initialReviewState,
   reviewReducer,
@@ -13,12 +17,14 @@ import type {
   getProductRatingCreatorProps,
   getDeliveryRatingCreatorProps,
 } from "../../reducer/reviewReducer";
-import ProductCard from "../../components/product/productCard";
-import Divider from "../../components/UI/divider";
-const Review = () => {
+
+const Review = ({
+  curProductData,
+}: InferGetStaticPropsType<typeof getStaticProps>) => {
   const [detailReviewIsSelected, setDetailReviewIsSelected] = useState(false);
   const [_, dispatchReview] = useReducer(reviewReducer, initialReviewState);
   const { getProductRatingCreator, getDeliveryRatingCreator } = reviewActions;
+  const { imgURL, name, price, discountPrice, id } = curProductData;
 
   const onSaveProductRating = useCallback(
     (productRating: getProductRatingCreatorProps) =>
@@ -36,9 +42,11 @@ const Review = () => {
     <Layout>
       <div>
         <ProductCard
-          title={BEAUTY.title}
-          img={BEAUTY.img}
-          price={BEAUTY.price}
+          title={name}
+          imgUrl={imgURL}
+          price={price}
+          discountPrice={discountPrice}
+          slug={id.toString()}
         />
       </div>
       <div className='bg-[#f3f4f6] px-3 py-5 w-full flex flex-col'>
@@ -74,3 +82,39 @@ const Review = () => {
 };
 
 export default Review;
+
+export const getStaticPaths = async () => {
+  const data = await fetch(
+    "https://practive-a11a9-default-rtdb.firebaseio.com/.json",
+  );
+  const productData = await data.json();
+  const paths = productData.map(({ id }: FetchedProductData) => {
+    return {
+      params: {
+        slug: id.toString(),
+      },
+    };
+  });
+
+  return {
+    paths,
+    fallback: false,
+  };
+};
+
+export const getStaticProps: GetStaticProps = async (context) => {
+  const { slug } = context.params as Params;
+  const data = await fetch(
+    "https://practive-a11a9-default-rtdb.firebaseio.com/.json",
+  );
+  const productData = await data.json();
+  const curProductData = productData.find(
+    ({ id }: FetchedProductData) => id.toString() === slug,
+  );
+
+  return {
+    props: {
+      curProductData,
+    },
+  };
+};

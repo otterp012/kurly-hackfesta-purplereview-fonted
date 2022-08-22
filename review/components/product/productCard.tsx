@@ -2,46 +2,60 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 
-const ProductCard = ({
-  img,
+type ProductCardProps = {
+  title: string;
+  imgUrl: string;
+  price: number;
+  discountPrice: number;
+  slug: string;
+};
+
+const ProductCard: React.FC<ProductCardProps> = ({
+  imgUrl,
   title,
   price,
-}: {
-  img: string;
-  title: string;
-  price: string;
+  discountPrice,
+  slug,
 }) => {
   const { pathname } = useRouter();
   return (
     <>
-      <Link href={"/productDetail"} passHref>
+      <Link href={`/productDetail/${slug}`} passHref>
         <a>
           <li
-            className={`w-full h-28 flex space-x-2 mt-3 mb-5 ${
+            className={`w-full h-28 flex space-x-2 mt-3 mb-7 ${
               pathname === "/review" && "border-[#d1d5db] border"
             }`}
           >
             <div className='w-[25%] h-full px-2 py-3'>
               <Image
-                src={img}
+                src={imgUrl}
                 alt={title}
                 width={300}
-                height={350}
+                height={380}
                 objectFit='cover'
               />
             </div>
             <div className='flex flex-col py-3 w-[75%]'>
-              <h3 className='text-md text-black'>[라로슈포제]{title}</h3>
+              <h3 className='text-sm text-black min-h-[45%]'>{title}</h3>
               <div>
-                <span className='text-md font-bold border-r pr-2 text-black'>
-                  {price}
+                <span className='text-md font-bold text-black mr-2'>
+                  {price.toLocaleString("ko-kr")}원
                 </span>
-                <span className='text-md ml-2 text-gray-500'>1개</span>
+                {discountPrice !== -1 && (
+                  <span className='text-sm font-bold text-gray line-through'>
+                    {discountPrice.toLocaleString("ko-kr")}원
+                  </span>
+                )}
+
+                <span className='text-xs ml-2 border-l pl-2 text-gray-500'>
+                  1개
+                </span>
               </div>
-              <div className='mt-3 flex justify-between'>
+              <div className='flex justify-between mt-1'>
                 <span className='text-sm'>배송완료</span>
                 {pathname === "/ordered" && (
-                  <Link href='/review' passHref>
+                  <Link href={`/review/${slug}`} passHref>
                     <a className='bg-main py-2 px-3 rounded-sm text-sm text-white'>
                       후기쓰기
                     </a>
