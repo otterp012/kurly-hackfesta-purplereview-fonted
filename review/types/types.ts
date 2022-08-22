@@ -7,8 +7,13 @@ export type Params = {
 export type FetchedProductData = {
   categories: string[];
   discountPrice: number;
-  id: number;
+  itemId: number;
   imgURL: string;
   name: string;
   price: number;
+  questionList: {
+    answerlist: string[];
+    asking: string;
+    questionId: number;
+  }[];
 };

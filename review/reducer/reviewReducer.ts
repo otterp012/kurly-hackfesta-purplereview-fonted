@@ -1,4 +1,4 @@
-export const initialReviewState = {
+export const initialReviewState: initialReviewStateTypes = {
   productRating: 5,
   deliveryRating: {
     isSatisfied: true,
@@ -6,6 +6,10 @@ export const initialReviewState = {
   },
 };
 
+export type initialReviewStateTypes = {
+  productRating: number;
+  deliveryRating: getDeliveryRatingCreatorProps;
+};
 const PRODUCT_RATING = "review/PRODUCT_RATING";
 const DELIVERY_RATING = "review/DELIVERY_RATING";
 
@@ -60,6 +64,7 @@ export const reviewReducer = (
         deliveryRating: payload.deliveryRating,
       };
     }
+
     default: {
       return state;
     }

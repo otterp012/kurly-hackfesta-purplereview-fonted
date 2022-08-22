@@ -31,10 +31,11 @@ export const getStaticPaths = async () => {
     "https://practive-a11a9-default-rtdb.firebaseio.com/.json",
   );
   const productData = await data.json();
-  const paths = productData.map(({ id }: FetchedProductData) => {
+  const { itemlist } = productData;
+  const paths = itemlist.map(({ itemId }: FetchedProductData) => {
     return {
       params: {
-        slug: id.toString(),
+        slug: itemId.toString(),
       },
     };
   });
@@ -51,8 +52,9 @@ export const getStaticProps: GetStaticProps = async (context) => {
     "https://practive-a11a9-default-rtdb.firebaseio.com/.json",
   );
   const productData = await data.json();
-  const curProductData = productData.find(
-    ({ id }: FetchedProductData) => id.toString() === slug,
+  const { itemlist } = productData;
+  const curProductData = itemlist.find(
+    ({ itemId }: FetchedProductData) => itemId.toString() === slug,
   );
 
   return {

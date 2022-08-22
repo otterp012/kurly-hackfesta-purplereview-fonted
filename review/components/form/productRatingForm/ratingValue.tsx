@@ -9,7 +9,7 @@ const RatingValue: React.FC<RatingValueProps> = ({ onChangeHandler, num }) => {
       <label htmlFor={`ratingValue-${num}`} />
       <input
         id={`ratingValue-${num}`}
-        data-ratingvalue={num}
+        value={num}
         type='radio'
         name='rating-2'
         className='daisy-mask daisy-mask-star-2 bg-main'

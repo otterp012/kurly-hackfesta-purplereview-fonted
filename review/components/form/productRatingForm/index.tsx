@@ -14,8 +14,8 @@ const ProductRatingForm: React.FC<RatingProps> = ({
   onSaveProductRating,
 }) => {
   const ratingOnChangeHandler = (e: React.ChangeEvent) => {
-    if (!(e.target instanceof HTMLElement)) return;
-    onSaveProductRating(Number(e.target.dataset.ratingvalue));
+    if (!(e.target instanceof HTMLInputElement)) return;
+    onSaveProductRating(Number(e.target.value));
   };
 
   return (

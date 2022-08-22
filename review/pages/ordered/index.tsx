@@ -15,12 +15,12 @@ const OrderedProducts = ({
           <>
             <Divider />
             <ProductCard
-              key={singleProduct.id}
+              key={singleProduct.itemId.toString()}
               title={singleProduct.name}
               imgUrl={singleProduct.imgURL}
               price={singleProduct.price}
               discountPrice={singleProduct.discountPrice}
-              slug={singleProduct.id.toString()}
+              slug={singleProduct.itemId.toString()}
             />
           </>
         ))}
@@ -36,10 +36,11 @@ export const getStaticProps: GetStaticProps = async () => {
     "https://practive-a11a9-default-rtdb.firebaseio.com/.json",
   );
   const productData = await data.json();
+  const { itemlist } = productData;
 
   return {
     props: {
-      productData,
+      productData: itemlist,
     },
   };
 };

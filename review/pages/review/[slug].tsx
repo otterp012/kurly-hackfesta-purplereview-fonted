@@ -1,11 +1,13 @@
-import { useCallback, useReducer, useState } from "react";
+import { useCallback, useEffect, useReducer, useState } from "react";
 import type { Params, FetchedProductData } from "../../types/types";
 import type { GetStaticProps, InferGetStaticPropsType } from "next/types";
 
 import Layout from "../../components/layout/layout";
 import ProductRatingForm from "../../components/form/productRatingForm/index";
 import DeliveryRatingForm from "../../components/form/deliveryRatingForm";
-import DetailReviewForm from "../../components/form/detailReviewForm";
+import DetailReviewForm, {
+  ReviewResult,
+} from "../../components/form/detailReviewForm";
 import ProductCard from "../../components/product/productCard";
 
 import {
@@ -19,13 +21,20 @@ import type {
 } from "../../reducer/reviewReducer";
 
 const Review = ({
-  curProductData,
+  curData,
 }: InferGetStaticPropsType<typeof getStaticProps>) => {
   const [detailReviewIsSelected, setDetailReviewIsSelected] = useState(false);
-  const [_, dispatchReview] = useReducer(reviewReducer, initialReviewState);
+  const [review, dispatchReview] = useReducer(
+    reviewReducer,
+    initialReviewState,
+  );
+  const [detailReviewResult, setDetailReviewResult] = useState<ReviewResult>();
+  useEffect(() => {
+    console.log(review);
+    console.log(detailReviewResult);
+  }, [review, detailReviewResult]);
   const { getProductRatingCreator, getDeliveryRatingCreator } = reviewActions;
-  const { imgURL, name, price, discountPrice, id } = curProductData;
-
+  const { imgURL, name, price, discountPrice, itemId, questionList } = curData;
   const onSaveProductRating = useCallback(
     (productRating: getProductRatingCreatorProps) =>
       dispatchReview(getProductRatingCreator(productRating)),
@@ -38,6 +47,9 @@ const Review = ({
     [getDeliveryRatingCreator],
   );
 
+  const onSaveDetailReview = (result: ReviewResult) => {
+    setDetailReviewResult(result);
+  };
   return (
     <Layout>
       <div>
@@ -46,7 +58,7 @@ const Review = ({
           imgUrl={imgURL}
           price={price}
           discountPrice={discountPrice}
-          slug={id.toString()}
+          slug={itemId.toString()}
         />
       </div>
       <div className='bg-[#f3f4f6] px-3 py-5 w-full flex flex-col'>
@@ -59,7 +71,10 @@ const Review = ({
         {detailReviewIsSelected && (
           <>
             <span className='w-[90%] h-1 border-b mt-8 mb-5 mx-auto border-b-gray' />
-            <DetailReviewForm />
+            <DetailReviewForm
+              questions={questionList}
+              onSaveDetailReview={onSaveDetailReview}
+            />
           </>
         )}
       </div>
@@ -88,10 +103,12 @@ export const getStaticPaths = async () => {
     "https://practive-a11a9-default-rtdb.firebaseio.com/.json",
   );
   const productData = await data.json();
-  const paths = productData.map(({ id }: FetchedProductData) => {
+
+  const { itemlist } = productData;
+  const paths = itemlist.map(({ itemId }: FetchedProductData) => {
     return {
       params: {
-        slug: id.toString(),
+        slug: itemId.toString(),
       },
     };
   });
@@ -108,13 +125,49 @@ export const getStaticProps: GetStaticProps = async (context) => {
     "https://practive-a11a9-default-rtdb.firebaseio.com/.json",
   );
   const productData = await data.json();
-  const curProductData = productData.find(
-    ({ id }: FetchedProductData) => id.toString() === slug,
+  const { itemlist } = productData;
+  const curData = itemlist.find(
+    ({ itemId }: FetchedProductData) => itemId.toString() === slug,
   );
 
   return {
     props: {
-      curProductData,
+      curData,
     },
   };
 };
+// export const getStaticPaths = async () => {
+//   const data = await fetch(
+//     "https://practive-a11a9-default-rtdb.firebaseio.com/.json",
+//   );
+//   const productData = await data.json();
+//   const paths = productData.map(({ id }: FetchedProductData) => {
+//     return {
+//       params: {
+//         slug: id.toString(),
+//       },
+//     };
+//   });
+
+//   return {
+//     paths,
+//     fallback: false,
+//   };
+// };
+
+// export const getStaticProps: GetStaticProps = async (context) => {
+//   const { slug } = context.params as Params;
+//   const data = await fetch(
+//     "https://practive-a11a9-default-rtdb.firebaseio.com/.json",
+//   );
+//   const productData = await data.json();
+//   const curProductData = productData.find(
+//     ({ id }: FetchedProductData) => id.toString() === slug,
+//   );
+
+//   return {
+//     props: {
+//       curProductData,
+//     },
+//   };
+// };
