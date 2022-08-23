@@ -28,12 +28,12 @@ const ProductDetail = ({
       />
       {reviewData.map((data: ReviewDataProps) => (
         <React.Fragment key={data.asking}>
+          <span className='w-[90%] h-1 border-b mt-0 mx-auto border-b-lightGray' />
           <ProductReview
             question={data.asking}
             answerlist={data.answerlist}
             answerRatio={data.ratiolist}
           />
-          <span className='w-[90%] h-1 border-b mt-0 mx-auto border-b-lightGray' />
         </React.Fragment>
       ))}
     </Layout>
@@ -75,10 +75,9 @@ export const getStaticProps: GetStaticProps = async (context) => {
   const productsData = await productResponse.json();
   const { itemlist } = productsData;
   const productData = itemlist.find(
-    ({ itemId }: FetchedProductData) => itemId.toString() === slug,
+    (data: FetchedProductData) => data.itemId.toString() === slug,
   );
-
-  console.log(productData);
+  console.log(reviewResponse, reviewData);
   return {
     props: {
       reviewData,

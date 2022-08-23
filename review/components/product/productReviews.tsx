@@ -29,7 +29,7 @@ const ProductReview: React.FC<ProductReviewProps> = ({
           <span className='w-[60%] text-md text-start font-bold text-black'>
             {question}
           </span>
-          <span className='text-sm text-primary font-bold'>
+          <span className='text-sm text-primary font-bold mb-2'>
             {answerlist[maxIdx]} {parsedAnswerRatio[maxIdx]}%
           </span>
         </div>

@@ -1,19 +1,21 @@
-import { useEffect, useState } from "react";
+import React, { ReducerAction, useEffect, useState } from "react";
 import type { Params, FetchedProductData } from "../../types/types";
 import type { GetStaticProps, InferGetStaticPropsType } from "next/types";
 
 import { reviewState } from "../../store/store";
-import { useRecoilState, useRecoilValue } from "recoil";
+import { useRecoilState } from "recoil";
 
 import Layout from "../../components/layout/layout";
 import ProductRatingForm from "../../components/form/productRatingForm/index";
 import DeliveryRatingForm from "../../components/form/deliveryRatingForm";
 import DetailReviewForm from "../../components/form/detailReviewForm";
 import ProductCard from "../../components/product/productCard";
+import { useRouter } from "next/router";
 
 const Review = ({
   curData,
 }: InferGetStaticPropsType<typeof getStaticProps>) => {
+  const router = useRouter();
   const [detailReviewIsSelected, setDetailReviewIsSelected] = useState(false);
   const [allReviewState, setAllReviewState] = useRecoilState(reviewState);
   const { imgURL, name, price, discountPrice, itemId, questionList } = curData;
@@ -29,6 +31,7 @@ const Review = ({
         body: JSON.stringify(allReviewState),
       },
     );
+    router.push("/ordered");
   };
 
   const buttonOnClickHandler = () => {
