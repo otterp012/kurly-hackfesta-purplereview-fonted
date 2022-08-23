@@ -1,10 +1,13 @@
+import React from "react";
 import type { GetStaticProps, InferGetStaticPropsType } from "next/types";
 import type { FetchedProductData } from "../../types/types";
 
 import Layout from "../../components/layout/layout";
 import ProductCard from "../../components/product/productCard";
 import Divider from "../../components/UI/divider";
-import React from "react";
+
+import { fetcher } from "../../lib/lib";
+import { DATA_END_POINT, END_POINT_QUERY } from "../../constants/constants";
 
 const OrderedProducts = ({
   productData,
@@ -32,12 +35,10 @@ const OrderedProducts = ({
 export default OrderedProducts;
 
 export const getStaticProps: GetStaticProps = async () => {
-  const data = await fetch(
-    "http://ec2-13-124-42-109.ap-northeast-2.compute.amazonaws.com:80/orderlist",
+  const { itemlist } = await fetcher(
+    DATA_END_POINT,
+    END_POINT_QUERY.ORDER_LIST,
   );
-  const productData = await data.json();
-  const { itemlist } = productData;
-
   return {
     props: {
       productData: itemlist,

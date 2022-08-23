@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
+
+import { useSetRecoilState } from "recoil";
+import { reviewState } from "../../../store/store";
 
 import TextForm from "../textForm";
 import Question from "./question";
-
-import { reviewState } from "../../../store/store";
-import { useSetRecoilState } from "recoil";
 
 type DetailReviewFormProps = {
   answerlist: string[];
@@ -32,9 +32,10 @@ const DetailReviewForm = ({
 
   const onSaveAnswerByQuestion = (questionId: number, value: string) => {
     setDetailReview((prev) => {
-      let isAlreadySelected = prev.keywordReviews.findIndex(
+      const isAlreadySelected = prev.keywordReviews.findIndex(
         (keywordReview) => keywordReview.questionId === questionId,
       );
+
       let newState: {
         questionId: number | null;
         value: string | null;
@@ -58,6 +59,7 @@ const DetailReviewForm = ({
           },
         ];
       }
+
       return {
         ...prev,
         keywordReviews: newState,

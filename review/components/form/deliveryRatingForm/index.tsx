@@ -1,12 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
+import { useSetRecoilState } from "recoil";
+import { reviewState } from "../../../store/store";
 
 import { ThumbUpIcon, ThumbDownIcon } from "@heroicons/react/outline";
 import TextForm from "../textForm";
 
-import { reviewState } from "../../../store/store";
-import { useSetRecoilState } from "recoil";
-
-const DeliveryRatingForm: React.FC = () => {
+const DeliveryRatingForm = () => {
   const [isSatisfied, setIsSatisfied] = useState(true);
   const setDeliveryReview = useSetRecoilState(reviewState);
 

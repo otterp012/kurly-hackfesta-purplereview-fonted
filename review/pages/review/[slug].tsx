@@ -1,24 +1,29 @@
-import React, { ReducerAction, useEffect, useState } from "react";
+import React, { useState } from "react";
+import { useRouter } from "next/router";
+import { useRecoilState } from "recoil";
+import { reviewState } from "../../store/store";
+
 import type { Params, FetchedProductData } from "../../types/types";
 import type { GetStaticProps, InferGetStaticPropsType } from "next/types";
-
-import { reviewState } from "../../store/store";
-import { useRecoilState } from "recoil";
 
 import Layout from "../../components/layout/layout";
 import ProductRatingForm from "../../components/form/productRatingForm/index";
 import DeliveryRatingForm from "../../components/form/deliveryRatingForm";
 import DetailReviewForm from "../../components/form/detailReviewForm";
 import ProductCard from "../../components/product/productCard";
-import { useRouter } from "next/router";
+
+import { fetcher } from "../../lib/lib";
+import { DATA_END_POINT, END_POINT_QUERY } from "../../constants/constants";
 
 const Review = ({
-  curData,
+  reviewData,
 }: InferGetStaticPropsType<typeof getStaticProps>) => {
   const router = useRouter();
   const [detailReviewIsSelected, setDetailReviewIsSelected] = useState(false);
   const [allReviewState, setAllReviewState] = useRecoilState(reviewState);
-  const { imgURL, name, price, discountPrice, itemId, questionList } = curData;
+
+  const { imgURL, name, price, discountPrice, itemId, questionList } =
+    reviewData;
 
   const reviewSubmitHandler = async () => {
     const response = await fetch(
@@ -31,6 +36,7 @@ const Review = ({
         body: JSON.stringify(allReviewState),
       },
     );
+
     router.push("/ordered");
   };
 
@@ -44,6 +50,7 @@ const Review = ({
       };
     });
   };
+
   return (
     <Layout>
       <ProductCard
@@ -89,12 +96,10 @@ const Review = ({
 export default Review;
 
 export const getStaticPaths = async () => {
-  const data = await fetch(
-    "https://practive-a11a9-default-rtdb.firebaseio.com/.json",
+  const { itemlist } = await fetcher(
+    DATA_END_POINT,
+    END_POINT_QUERY.ORDER_LIST,
   );
-  const productData = await data.json();
-
-  const { itemlist } = productData;
   const paths = itemlist.map(({ itemId }: FetchedProductData) => {
     return {
       params: {
@@ -111,18 +116,18 @@ export const getStaticPaths = async () => {
 
 export const getStaticProps: GetStaticProps = async (context) => {
   const { slug } = context.params as Params;
-  const data = await fetch(
-    "http://ec2-13-124-42-109.ap-northeast-2.compute.amazonaws.com:80/orderlist",
+
+  const { itemlist } = await fetcher(
+    DATA_END_POINT,
+    END_POINT_QUERY.ORDER_LIST,
   );
-  const productData = await data.json();
-  const { itemlist } = productData;
-  const curData = itemlist.find(
+  const reviewData = itemlist.find(
     ({ itemId }: FetchedProductData) => itemId.toString() === slug,
   );
 
   return {
     props: {
-      curData,
+      reviewData,
     },
   };
 };

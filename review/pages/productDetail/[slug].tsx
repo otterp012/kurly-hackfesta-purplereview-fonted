@@ -1,10 +1,13 @@
+import React from "react";
 import type { GetStaticProps, InferGetStaticPropsType } from "next/types";
 import type { Params, FetchedProductData } from "../../types/types";
 
 import Layout from "../../components/layout/layout";
 import Product from "../../components/product/product";
 import ProductReview from "../../components/product/productReviews";
-import React from "react";
+
+import { fetcher } from "../../lib/lib";
+import { DATA_END_POINT, END_POINT_QUERY } from "../../constants/constants";
 
 type ReviewDataProps = {
   asking: string;
@@ -43,11 +46,11 @@ const ProductDetail = ({
 export default ProductDetail;
 
 export const getStaticPaths = async () => {
-  const data = await fetch(
-    "http://ec2-13-124-42-109.ap-northeast-2.compute.amazonaws.com:80/orderlist",
+  const { itemlist } = await fetcher(
+    DATA_END_POINT,
+    END_POINT_QUERY.ORDER_LIST,
   );
-  const productData = await data.json();
-  const { itemlist } = productData;
+
   const paths = itemlist.map(({ itemId }: FetchedProductData) => {
     return {
       params: {
@@ -64,16 +67,18 @@ export const getStaticPaths = async () => {
 
 export const getStaticProps: GetStaticProps = async (context) => {
   const { slug } = context.params as Params;
-  const reviewResponse = await fetch(
-    `http://ec2-13-124-42-109.ap-northeast-2.compute.amazonaws.com:80/items/${slug}`,
+  const slugStr = slug?.toString();
+
+  const reviewData = await fetcher(
+    DATA_END_POINT,
+    END_POINT_QUERY.ITEM,
+    slugStr,
   );
-  const productResponse = await fetch(
-    "http://ec2-13-124-42-109.ap-northeast-2.compute.amazonaws.com:80/orderlist",
+  const { itemlist } = await fetcher(
+    DATA_END_POINT,
+    END_POINT_QUERY.ORDER_LIST,
   );
 
-  const reviewData = await reviewResponse.json();
-  const productsData = await productResponse.json();
-  const { itemlist } = productsData;
   const productData = itemlist.find(
     (data: FetchedProductData) => data.itemId.toString() === slug,
   );

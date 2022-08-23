@@ -5,6 +5,7 @@ type ProductReviewProps = {
   answerlist: string[];
   answerRatio: string[];
 };
+
 const ProductReview: React.FC<ProductReviewProps> = ({
   question,
   answerlist,
