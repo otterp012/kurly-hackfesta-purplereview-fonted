@@ -25,7 +25,7 @@ const ProductReview: React.FC<ProductReviewProps> = ({
   return (
     <div className='flex flex-col pt-1 px-2'>
       <div className='flex flex-col h-[120px]'>
-        <div className='flex justify-between items-end'>
+        <div className='flex justify-between items-center'>
           <span className='w-[60%] text-md text-start font-bold text-black'>
             {question}
           </span>

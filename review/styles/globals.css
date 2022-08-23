@@ -4,9 +4,9 @@
 
 @layer base {
   body {
-    @apply md:min-h-screen;
-    @apply md:flex;
-    @apply md:items-center;
-    @apply md:justify-center;
+    @apply sm:min-h-screen;
+    @apply sm:flex;
+    @apply sm:items-center;
+    @apply sm:justify-center;
   }
 }

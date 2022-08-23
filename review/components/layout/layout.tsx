@@ -11,7 +11,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <div
-      className={`h-screen flex flex-col w-full overflow-y-scroll md:w-[390px] md:h-[720px] md:border-gray md:border md:rounded-md ' ${
+      className={`h-screen flex flex-col w-full overflow-y-scroll sm:w-[390px] sm:h-[720px] sm:border-gray sm:border sm:rounded-md ' ${
         pathname == "/" && "bg-main"
       }`}
     >
