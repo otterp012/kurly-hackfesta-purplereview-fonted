@@ -4,6 +4,7 @@ import type { FetchedProductData } from "../../types/types";
 import Layout from "../../components/layout/layout";
 import ProductCard from "../../components/product/productCard";
 import Divider from "../../components/UI/divider";
+import { useEffect } from "react";
 
 const OrderedProducts = ({
   productData,
