@@ -17,7 +17,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
   discountPrice,
   slug,
 }) => {
-  const { pathname } = useRouter();
+  const { pathname, push } = useRouter();
 
   return (
     <>
@@ -55,11 +55,12 @@ const ProductCard: React.FC<ProductCardProps> = ({
               <div className='flex justify-between mt-1'>
                 <span className='text-sm'>배송완료</span>
                 {pathname === "/ordered" && (
-                  <Link href={`/review/${slug}`} passHref>
-                    <a className='bg-main py-2 px-3 rounded-sm text-sm text-white'>
-                      후기쓰기
-                    </a>
-                  </Link>
+                  <button
+                    className='bg-main py-2 px-3 rounded-sm text-sm text-white'
+                    onClick={() => push(`/review/${slug}`)}
+                  >
+                    후기쓰기
+                  </button>
                 )}
               </div>
             </div>

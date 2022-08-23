@@ -3,7 +3,7 @@ import type { Params, FetchedProductData } from "../../types/types";
 import type { GetStaticProps, InferGetStaticPropsType } from "next/types";
 
 import { reviewState } from "../../store/store";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 
 import Layout from "../../components/layout/layout";
 import ProductRatingForm from "../../components/form/productRatingForm/index";
@@ -15,13 +15,32 @@ const Review = ({
   curData,
 }: InferGetStaticPropsType<typeof getStaticProps>) => {
   const [detailReviewIsSelected, setDetailReviewIsSelected] = useState(false);
-
-  const [test, setTest] = useRecoilState(reviewState);
-  useEffect(() => {
-    console.log(test);
-  }, [test]);
+  const [allReviewState, setAllReviewState] = useRecoilState(reviewState);
   const { imgURL, name, price, discountPrice, itemId, questionList } = curData;
 
+  const reviewSubmitHandler = async () => {
+    const response = await fetch(
+      `http://ec2-13-124-42-109.ap-northeast-2.compute.amazonaws.com:80/review/${itemId}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(allReviewState),
+      },
+    );
+  };
+
+  const buttonOnClickHandler = () => {
+    setDetailReviewIsSelected(!detailReviewIsSelected);
+    setAllReviewState((prev) => {
+      return {
+        ...prev,
+        keywordReviews: [],
+        itemContent: "",
+      };
+    });
+  };
   return (
     <Layout>
       <ProductCard
@@ -47,14 +66,17 @@ const Review = ({
       <div className='flex flex-col items-center space-y-4 pt-5'>
         <button
           className='bg-main w-[60%] h-16 text-white rounded-lg'
-          onClick={() => setDetailReviewIsSelected(!detailReviewIsSelected)}
+          onClick={buttonOnClickHandler}
         >
           {detailReviewIsSelected
             ? "상세한 후기 작성 그만하기"
             : "상세한 후기 작성하기"}
         </button>
-        <button className='bg-main w-[60%] h-16 text-white rounded-lg'>
-          제출하기
+        <button
+          className='bg-main w-[60%] h-16 text-white rounded-lg'
+          onClick={reviewSubmitHandler}
+        >
+          {detailReviewIsSelected ? "그대로 제출하기" : "제출하기"}
         </button>
       </div>
     </Layout>
@@ -87,7 +109,7 @@ export const getStaticPaths = async () => {
 export const getStaticProps: GetStaticProps = async (context) => {
   const { slug } = context.params as Params;
   const data = await fetch(
-    "https://practive-a11a9-default-rtdb.firebaseio.com/.json",
+    "http://ec2-13-124-42-109.ap-northeast-2.compute.amazonaws.com:80/orderlist",
   );
   const productData = await data.json();
   const { itemlist } = productData;
