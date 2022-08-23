@@ -1,59 +1,28 @@
 import { ResponsiveBar } from "@nivo/bar";
+import type { ChartProps } from "../../types/types";
 
-const data = [
-  {
-    country: "AD",
-    "hot dog": 141,
-    "hot dogColor": "hsl(98, 70%, 50%)",
-    burger: 0,
-    burgerColor: "hsl(158, 70%, 50%)",
-    sandwich: 149,
-    sandwichColor: "hsl(137, 70%, 50%)",
-    kebab: 20,
-    kebabColor: "hsl(352, 70%, 50%)",
-    fries: 158,
-    friesColor: "hsl(39, 70%, 50%)",
-    donut: 113,
-    donutColor: "hsl(150, 70%, 50%)",
-  },
-  {
-    country: "AM",
-    "hot dog": 143,
-    "hot dogColor": "hsl(235, 70%, 50%)",
-    burger: 38,
-    burgerColor: "hsl(333, 70%, 50%)",
-    sandwich: 62,
-    sandwichColor: "hsl(336, 70%, 50%)",
-    kebab: 126,
-    kebabColor: "hsl(269, 70%, 50%)",
-    fries: 40,
-    friesColor: "hsl(141, 70%, 50%)",
-    donut: 0,
-    donutColor: "hsl(189, 70%, 50%)",
-  },
-];
-const BarChart = () => {
+const BarChart: React.FC<ChartProps> = ({
+  chartData,
+  asking,
+  answerlist,
+}: ChartProps) => {
+  const parsedData: { [key: string]: string } = { 질문명: asking };
+  answerlist.forEach((v, i) => {
+    parsedData[`${v}`] = chartData[i];
+  });
+
   return (
     <ResponsiveBar
-      data={data}
-      keys={["hot dog", "burger", "sandwich", "kebab", "fries", "donut"]}
-      indexBy='country'
-      margin={{ top: 10, right: 130, bottom: 50, left: 60 }}
+      data={[parsedData]}
+      keys={answerlist}
+      indexBy='질문명'
+      margin={{ top: 0, right: 130, bottom: 60, left: 60 }}
       padding={0.3}
       layout='horizontal'
       valueScale={{ type: "linear" }}
       indexScale={{ type: "band", round: true }}
       colors={{ scheme: "nivo" }}
       defs={[
-        {
-          id: "dots",
-          type: "patternDots",
-          background: "inherit",
-          color: "#38bcb2",
-          size: 4,
-          padding: 1,
-          stagger: true,
-        },
         {
           id: "lines",
           type: "patternLines",
@@ -62,20 +31,6 @@ const BarChart = () => {
           rotation: -45,
           lineWidth: 6,
           spacing: 10,
-        },
-      ]}
-      fill={[
-        {
-          match: {
-            id: "fries",
-          },
-          id: "dots",
-        },
-        {
-          match: {
-            id: "sandwich",
-          },
-          id: "lines",
         },
       ]}
       borderColor={{
@@ -88,15 +43,14 @@ const BarChart = () => {
         tickSize: 5,
         tickPadding: 5,
         tickRotation: 0,
-        legend: "country",
+        legend: asking,
         legendPosition: "middle",
         legendOffset: 32,
       }}
       axisLeft={{
-        tickSize: 5,
-        tickPadding: 5,
-        tickRotation: 0,
-        legend: "food",
+        tickSize: 0,
+        tickPadding: -5,
+        tickRotation: 180,
         legendPosition: "middle",
         legendOffset: -40,
       }}
@@ -131,10 +85,7 @@ const BarChart = () => {
         },
       ]}
       role='application'
-      ariaLabel='Nivo bar chart demo'
-      barAriaLabel={function (e) {
-        return e.id + ": " + e.formattedValue + " in country: " + e.indexValue;
-      }}
+      ariaLabel='Depth2-Question'
     />
   );
 };

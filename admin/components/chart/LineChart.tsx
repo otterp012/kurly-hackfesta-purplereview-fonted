@@ -1,120 +1,47 @@
 import { ResponsiveLine } from "@nivo/line";
+import React from "react";
 
-const data = [
-  {
-    id: "제품만족도",
-    color: "hsl(126, 70%, 50%)",
-    data: [
-      {
-        x: "1",
-        y: 11,
-      },
-      {
-        x: "2",
-        y: 99,
-      },
-      {
-        x: "3",
-        y: 80,
-      },
-      {
-        x: "4",
-        y: 70,
-      },
-      {
-        x: "5",
-        y: 99,
-      },
-      {
-        x: "6",
-        y: 5,
-      },
-      {
-        x: "7",
-        y: 13,
-      },
-      {
-        x: "8",
-        y: 22,
-      },
-      {
-        x: "9",
-        y: 36,
-      },
-      {
-        x: "10",
-        y: 48,
-      },
-      {
-        x: "11",
-        y: 56,
-      },
-      {
-        x: "12",
-        y: 72,
-      },
-    ],
-  },
-  {
-    id: "배송만족도",
-    color: "hsl(263, 70%, 50%)",
-    data: [
-      {
-        x: "1",
-        y: 24,
-      },
-      {
-        x: "2",
-        y: 36,
-      },
-      {
-        x: "3",
-        y: 48,
-      },
-      {
-        x: "4",
-        y: 56,
-      },
-      {
-        x: "5",
-        y: 72,
-      },
-      {
-        x: "6",
-        y: 82,
-      },
-      {
-        x: "7",
-        y: 92,
-      },
-      {
-        x: "8",
-        y: 85,
-      },
-      {
-        x: "9",
-        y: 88,
-      },
-      {
-        x: "10",
-        y: 72,
-      },
-      {
-        x: "11",
-        y: 56,
-      },
-      {
-        x: "12",
-        y: 1,
-      },
-    ],
-  },
-];
+type LineChartProps = {
+  data: {
+    delivery: string[];
+    item: string[];
+  };
+};
 
-const LineChart = () => {
+const LineChart: React.FC<LineChartProps> = ({ data }) => {
+  const { delivery, item } = data;
+
+  const parsedProductData = item.map((v: string, i: number) => {
+    const month = `${i + 9 > 12 ? i - 3 : i + 9}월`;
+    return {
+      x: month,
+      y: (Number(v) * 20).toString(),
+    };
+  });
+
+  const parsedDeliveryData = delivery.map((v: string, i: number) => {
+    const month = `${i + 9 > 12 ? i - 3 : i + 9}월`;
+    return {
+      x: month,
+      y: v,
+    };
+  });
+
+  const chartData = [
+    {
+      id: "제품만족도",
+      color: "red",
+      data: parsedProductData,
+    },
+    {
+      id: "배송만족도",
+      color: "blue",
+      data: parsedDeliveryData,
+    },
+  ];
   return (
     <ResponsiveLine
-      data={data}
+      data={chartData}
       xScale={{ type: "point" }}
       yScale={{
         type: "linear",

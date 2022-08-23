@@ -5,7 +5,6 @@ type BigLogProps = {
 };
 
 const BigLogo: React.FC<BigLogProps> = ({ color, width, height }) => {
-  const filledColor = color === "white" ? "#fff" : "#5f0080";
   const curWidth = width ? width : "150px";
   const curHeight = height ? height : "80px";
   return (

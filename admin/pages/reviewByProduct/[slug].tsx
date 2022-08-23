@@ -1,30 +1,44 @@
-import { GetStaticProps, InferGetStaticPropsType } from "next/types";
+import type { GetStaticProps, InferGetStaticPropsType } from "next/types";
+import type { Params, FetchedProductData } from "../../types/types";
+
 import LineChart from "../../components/chart/LineChart";
-import BigLogo from "../../components/layout/BigLogo";
 import Layout from "../../components/layout/layout";
 import Rating from "../../components/rating";
 import ReviewByQuestion from "../../components/reviewByQuestion";
-import Select from "../../components/UI/select";
-import type { Params, FetchedProductData } from "../../types/types";
+
+import { DATA_END_POINT, END_POINT_QUERY } from "../../constants/constants";
+import { fetcher } from "../../lib/lib";
+
+type ReviewDataProps = {
+  asking: string;
+  category: string;
+  answerlist: string[];
+  ratiolist: string[];
+};
+
 const ReviewByProduct = ({
-  productData,
+  allProductsById,
+  reviewData,
+  graphDataObj,
 }: InferGetStaticPropsType<typeof getStaticProps>) => {
-  console.log(productData);
+  const { deliveryScoreAvg, itemScoreAvg, graphData } = graphDataObj;
+
   return (
-    <Layout data={productData}>
-      <div className='w-[50%] min-h-full bg-lightGray'>
+    <Layout data={allProductsById}>
+      <div className='w-[50%] min-h-full border-r border-r-gray'>
         <div className='h-[20%] px-5 flex items-center justify-around'>
-          <Rating title='제품만족도' rating='4.5 /5.0' />
-          <Rating title='배송만족도' rating='95%' />
+          <Rating title='제품만족도' rating={itemScoreAvg} />
+          <Rating title='배송만족도' rating={`${deliveryScoreAvg}%`} />
         </div>
         {/* 왼쪽하단 */}
         <div className='h-[60%]'>
-          <LineChart />
+          <LineChart data={graphData} />
         </div>
       </div>
-      <div className='w-[50%] min-h-full'>
-        <ReviewByQuestion />
-        <ReviewByQuestion />
+      <div className='w-[50%] min-h-full px-3'>
+        {reviewData.map((v: ReviewDataProps, i: number) => {
+          return <ReviewByQuestion data={v} title={`depth - ${i + 2}`} />;
+        })}
       </div>
     </Layout>
   );
@@ -32,13 +46,51 @@ const ReviewByProduct = ({
 
 export default ReviewByProduct;
 
-export const getStaticPaths = async () => {
-  const data = await fetch(
-    "https://practive-a11a9-default-rtdb.firebaseio.com/.json",
-  );
-  const productData = await data.json();
+export const getStaticProps: GetStaticProps = async (context) => {
+  const { slug } = context.params as Params;
+  const slugStr = slug?.toString();
 
-  const { itemlist } = productData;
+  const reviewData = await fetcher(
+    DATA_END_POINT,
+    END_POINT_QUERY.ITEM,
+    slugStr,
+  );
+
+  const { itemlist } = await fetcher(
+    DATA_END_POINT,
+    END_POINT_QUERY.ORDER_LIST,
+  );
+
+  const allProductsById = itemlist.map(
+    ({ itemId, name }: FetchedProductData) => {
+      return {
+        itemId: itemId,
+        name,
+      };
+    },
+  );
+
+  const graphDataObj = await fetcher(
+    DATA_END_POINT,
+    END_POINT_QUERY.GRAPH_DATA,
+    slugStr,
+  );
+
+  return {
+    props: {
+      allProductsById,
+      reviewData,
+      graphDataObj,
+    },
+  };
+};
+
+export const getStaticPaths = async () => {
+  const { itemlist } = await fetcher(
+    DATA_END_POINT,
+    END_POINT_QUERY.ORDER_LIST,
+  );
+
   const paths = itemlist.map(({ itemId }: FetchedProductData) => {
     return {
       params: {
@@ -50,24 +102,5 @@ export const getStaticPaths = async () => {
   return {
     paths,
     fallback: false,
-  };
-};
-
-export const getStaticProps: GetStaticProps = async (context) => {
-  const { slug } = context.params as Params;
-  const data = await fetch(
-    "https://practive-a11a9-default-rtdb.firebaseio.com/.json",
-  );
-  const productData = await data.json();
-  const { itemlist } = productData;
-  const curData = itemlist.find(
-    ({ itemId }: FetchedProductData) => itemId.toString() === slug,
-  );
-
-  console.log(curData);
-  return {
-    props: {
-      productData: curData,
-    },
   };
 };
