@@ -77,7 +77,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
   const productData = itemlist.find(
     (data: FetchedProductData) => data.itemId.toString() === slug,
   );
-  console.log(reviewResponse, reviewData);
+
   return {
     props: {
       reviewData,

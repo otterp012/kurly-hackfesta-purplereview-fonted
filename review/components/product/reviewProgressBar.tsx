@@ -10,7 +10,7 @@ const ReviewProgressBar: React.FC<ReviewProgressBarProps> = ({
   isMax,
 }) => {
   return (
-    <div className='flex w-full items-center mt-1'>
+    <div className='flex w-full items-center justify-between mt-1'>
       <span
         className={`text-sm mr-1 w-32 font-semibold ${
           isMax ? "text-main" : "text-black"
@@ -28,7 +28,7 @@ const ReviewProgressBar: React.FC<ReviewProgressBarProps> = ({
         />
       </div>
       <span
-        className={`text-md font-semibold ${
+        className={`text-sm font-semibold ${
           isMax ? "text-main font-bold" : "text-black"
         }`}
       >
