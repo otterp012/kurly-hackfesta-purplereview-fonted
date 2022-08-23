@@ -1,37 +1,48 @@
 import React, { useEffect, useState } from "react";
-import type { getDeliveryRatingCreatorProps } from "../../../reducer/reviewReducer";
 
 import { ThumbUpIcon, ThumbDownIcon } from "@heroicons/react/outline";
 import TextForm from "../textForm";
 
-type DeliveryRatingFormProps = {
-  onSaveDeliveryRating: (rating: getDeliveryRatingCreatorProps) => void;
-};
+import { reviewState } from "../../../store/store";
+import { useSetRecoilState } from "recoil";
 
-const DeliveryRatingForm: React.FC<DeliveryRatingFormProps> = ({
-  onSaveDeliveryRating,
-}) => {
+const DeliveryRatingForm: React.FC = () => {
   const [isSatisfied, setIsSatisfied] = useState(true);
-  const [text, setText] = useState("");
+  const setDeliveryReview = useSetRecoilState(reviewState);
 
   const onChangeHandler = (e: React.ChangeEvent) => {
     if (!(e.target instanceof HTMLInputElement)) return;
     const selectedRating = e.target.value === "true" ? true : false;
-    if (selectedRating) setText("");
     setIsSatisfied(selectedRating);
+
+    if (selectedRating) {
+      setDeliveryReview((prev) => {
+        return {
+          ...prev,
+          deliverySatisfaction: selectedRating ? "Good" : "bad",
+          deliveryContent: "",
+        };
+      });
+    } else {
+      setDeliveryReview((prev) => {
+        return {
+          ...prev,
+          deliverySatisfaction: selectedRating ? "Good" : "bad",
+        };
+      });
+    }
   };
 
   const textFormOnChangeHandler = (e: React.ChangeEvent) => {
     if (!(e.target instanceof HTMLTextAreaElement)) return;
-    setText(e.target.value.trim());
-  };
-
-  useEffect(() => {
-    onSaveDeliveryRating({
-      isSatisfied,
-      dissatisfiedText: text,
+    const deliveryReviewText = e.target.value.trim();
+    setDeliveryReview((prev) => {
+      return {
+        ...prev,
+        deliveryContent: deliveryReviewText,
+      };
     });
-  }, [isSatisfied, text, onSaveDeliveryRating]);
+  };
 
   return (
     <>

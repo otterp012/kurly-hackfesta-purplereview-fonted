@@ -1,56 +1,27 @@
-import { useCallback, useEffect, useReducer, useState } from "react";
+import { useEffect, useState } from "react";
 import type { Params, FetchedProductData } from "../../types/types";
 import type { GetStaticProps, InferGetStaticPropsType } from "next/types";
+
+import { reviewState } from "../../store/store";
+import { useRecoilState } from "recoil";
 
 import Layout from "../../components/layout/layout";
 import ProductRatingForm from "../../components/form/productRatingForm/index";
 import DeliveryRatingForm from "../../components/form/deliveryRatingForm";
-import DetailReviewForm, {
-  ReviewResult,
-} from "../../components/form/detailReviewForm";
+import DetailReviewForm from "../../components/form/detailReviewForm";
 import ProductCard from "../../components/product/productCard";
-
-import {
-  initialReviewState,
-  reviewReducer,
-  reviewActions,
-} from "../../reducer/reviewReducer";
-import type {
-  getProductRatingCreatorProps,
-  getDeliveryRatingCreatorProps,
-} from "../../reducer/reviewReducer";
 
 const Review = ({
   curData,
 }: InferGetStaticPropsType<typeof getStaticProps>) => {
   const [detailReviewIsSelected, setDetailReviewIsSelected] = useState(false);
-  const [review, dispatchReview] = useReducer(
-    reviewReducer,
-    initialReviewState,
-  );
-  const [detailReviewResult, setDetailReviewResult] = useState<ReviewResult>();
+
+  const [test, setTest] = useRecoilState(reviewState);
   useEffect(() => {
-    console.log(review);
-    console.log(detailReviewResult);
-  }, [review, detailReviewResult]);
-
-  const { getProductRatingCreator, getDeliveryRatingCreator } = reviewActions;
+    console.log(test);
+  }, [test]);
   const { imgURL, name, price, discountPrice, itemId, questionList } = curData;
-  const onSaveProductRating = useCallback(
-    (productRating: getProductRatingCreatorProps) =>
-      dispatchReview(getProductRatingCreator(productRating)),
-    [getProductRatingCreator],
-  );
 
-  const onSaveDeliveryRating = useCallback(
-    (rating: getDeliveryRatingCreatorProps) =>
-      dispatchReview(getDeliveryRatingCreator(rating)),
-    [getDeliveryRatingCreator],
-  );
-
-  const onSaveDetailReview = (result: ReviewResult) => {
-    setDetailReviewResult(result);
-  };
   return (
     <Layout>
       <ProductCard
@@ -62,19 +33,13 @@ const Review = ({
       />
 
       <div className='bg-[#f3f4f6] px-3 py-5 w-full flex flex-col'>
-        <ProductRatingForm
-          onSaveProductRating={onSaveProductRating}
-          question='제품은 어떠셨어요 ?'
-        />
-        <DeliveryRatingForm onSaveDeliveryRating={onSaveDeliveryRating} />
+        <ProductRatingForm question='제품은 어떠셨어요 ?' />
+        <DeliveryRatingForm />
 
         {detailReviewIsSelected && (
           <>
             <span className='w-[90%] h-1 border-b mt-8 mb-5 mx-auto border-b-gray' />
-            <DetailReviewForm
-              questions={questionList}
-              onSaveDetailReview={onSaveDetailReview}
-            />
+            <DetailReviewForm questions={questionList} />
           </>
         )}
       </div>

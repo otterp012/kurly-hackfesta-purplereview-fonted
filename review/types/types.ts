@@ -5,15 +5,15 @@ export type Params = {
 };
 
 export type FetchedProductData = {
-  categories: string[];
-  discountPrice: number;
   itemId: number;
-  imgURL: string;
   name: string;
   price: number;
+  discountPrice: number;
+  imgURL: string;
+  categories: string[];
   questionList: {
-    answerlist: string[];
-    asking: string;
     questionId: number;
+    asking: string;
+    answerlist: string[];
   }[];
 };

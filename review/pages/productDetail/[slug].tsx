@@ -4,11 +4,20 @@ import type { Params, FetchedProductData } from "../../types/types";
 import Layout from "../../components/layout/layout";
 import Product from "../../components/product/product";
 import ProductReview from "../../components/product/productReviews";
+import React from "react";
+
+type ReviewDataProps = {
+  asking: string;
+  answerlist: string[];
+  ratiolist: string[];
+};
 
 const ProductDetail = ({
-  curProductData,
+  productData,
+  reviewData,
 }: InferGetStaticPropsType<typeof getStaticProps>) => {
-  const { imgURL, name, price, discountPrice } = curProductData;
+  const { imgURL, name, price, discountPrice } = productData;
+
   return (
     <Layout>
       <Product
@@ -17,9 +26,16 @@ const ProductDetail = ({
         price={price}
         discountPrice={discountPrice}
       />
-      <ProductReview />
-      <span className='w-[90%] h-1 border-b mt-0 mx-auto border-b-lightGray' />
-      <ProductReview />
+      {reviewData.map((data: ReviewDataProps) => (
+        <React.Fragment key={data.asking}>
+          <ProductReview
+            question={data.asking}
+            answerlist={data.answerlist}
+            answerRatio={data.ratiolist}
+          />
+          <span className='w-[90%] h-1 border-b mt-0 mx-auto border-b-lightGray' />
+        </React.Fragment>
+      ))}
     </Layout>
   );
 };
@@ -28,7 +44,7 @@ export default ProductDetail;
 
 export const getStaticPaths = async () => {
   const data = await fetch(
-    "https://practive-a11a9-default-rtdb.firebaseio.com/.json",
+    "http://ec2-13-124-42-109.ap-northeast-2.compute.amazonaws.com:80/orderlist",
   );
   const productData = await data.json();
   const { itemlist } = productData;
@@ -48,18 +64,25 @@ export const getStaticPaths = async () => {
 
 export const getStaticProps: GetStaticProps = async (context) => {
   const { slug } = context.params as Params;
-  const data = await fetch(
-    "https://practive-a11a9-default-rtdb.firebaseio.com/.json",
+  const reviewResponse = await fetch(
+    `http://ec2-13-124-42-109.ap-northeast-2.compute.amazonaws.com:80/items/${slug}`,
   );
-  const productData = await data.json();
-  const { itemlist } = productData;
-  const curProductData = itemlist.find(
+  const productResponse = await fetch(
+    "http://ec2-13-124-42-109.ap-northeast-2.compute.amazonaws.com:80/orderlist",
+  );
+
+  const reviewData = await reviewResponse.json();
+  const productsData = await productResponse.json();
+  const { itemlist } = productsData;
+  const productData = itemlist.find(
     ({ itemId }: FetchedProductData) => itemId.toString() === slug,
   );
 
+  console.log(productData);
   return {
     props: {
-      curProductData,
+      reviewData,
+      productData,
     },
   };
 };

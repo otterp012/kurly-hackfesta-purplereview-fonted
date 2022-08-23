@@ -1,20 +1,26 @@
 import RatingValue from "./ratingValue";
-import type { getProductRatingCreatorProps } from "../../../reducer/reviewReducer";
+
+import { reviewState } from "../../../store/store";
+import { useSetRecoilState } from "recoil";
 
 type RatingProps = {
   question: string;
-  onSaveProductRating: (rating: getProductRatingCreatorProps) => void;
 };
 
 const productRatingConstants: number[] = [1, 2, 3, 4, 5];
 
-const ProductRatingForm: React.FC<RatingProps> = ({
-  question,
-  onSaveProductRating,
-}) => {
+const ProductRatingForm: React.FC<RatingProps> = ({ question }) => {
+  const setProductReview = useSetRecoilState(reviewState);
+
   const ratingOnChangeHandler = (e: React.ChangeEvent) => {
     if (!(e.target instanceof HTMLInputElement)) return;
-    onSaveProductRating(Number(e.target.value));
+    const star = Number(e.target.value);
+    setProductReview((prev) => {
+      return {
+        ...prev,
+        star,
+      };
+    });
   };
 
   return (

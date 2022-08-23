@@ -3,64 +3,68 @@ import React, { useEffect, useState } from "react";
 import TextForm from "../textForm";
 import Question from "./question";
 
+import { reviewState } from "../../../store/store";
+import { useSetRecoilState } from "recoil";
+
 type DetailReviewFormProps = {
   answerlist: string[];
   asking: string;
   questionId: number;
 };
 
-type KeywordReviewObj = {
-  questionId: number;
-  value: string;
-};
-
-export type ReviewResult = {
-  keywordReviews: KeywordReviewObj[];
-  itemContent: string;
-};
-
 const DetailReviewForm = ({
   questions,
-  onSaveDetailReview,
 }: {
   questions: DetailReviewFormProps[];
-  onSaveDetailReview: (result: ReviewResult) => void;
 }) => {
-  const [keywordReviews, setKeywordReviews] = useState<KeywordReviewObj[]>([]);
-  const [text, setText] = useState("");
+  const setDetailReview = useSetRecoilState(reviewState);
+
   const textFormOnChangeHandler = (e: React.ChangeEvent) => {
     if (!(e.target instanceof HTMLTextAreaElement)) return;
-    setText(e.target.value.trim());
+    const itemContent = e.target.value.trim();
+    setDetailReview((prev) => {
+      return {
+        ...prev,
+        itemContent,
+      };
+    });
   };
 
   const onSaveAnswerByQuestion = (questionId: number, value: string) => {
-    let isAlreadySelected = keywordReviews.findIndex(
-      (keywordReview) => keywordReview.questionId === questionId,
-    );
+    setDetailReview((prev) => {
+      let isAlreadySelected = prev.keywordReviews.findIndex(
+        (keywordReview) => keywordReview.questionId === questionId,
+      );
+      let newState: {
+        questionId: number | null;
+        value: string | null;
+      }[];
 
-    setKeywordReviews((prev) => {
-      if (isAlreadySelected === -1) {
-        return [...prev, { questionId, value }];
+      if (isAlreadySelected !== -1) {
+        newState = prev.keywordReviews.map((v, i) => {
+          if (i === isAlreadySelected) {
+            return {
+              questionId,
+              value,
+            };
+          } else return v;
+        });
       } else {
-        const tmp = prev.splice(isAlreadySelected, 1);
-        return [
-          ...prev,
+        newState = [
+          ...prev.keywordReviews,
           {
             questionId,
             value,
           },
         ];
       }
+      return {
+        ...prev,
+        keywordReviews: newState,
+      };
     });
   };
 
-  useEffect(() => {
-    const newState = {
-      keywordReviews,
-      itemContent: text,
-    };
-    onSaveDetailReview(newState);
-  }, [keywordReviews, text]);
   return (
     <>
       <form className='space-y-3 w-full text-black'>

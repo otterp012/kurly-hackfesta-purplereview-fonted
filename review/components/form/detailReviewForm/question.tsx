@@ -6,6 +6,7 @@ type QuestionProps = {
   questionId: number;
   onSaveAnswerByQuestion: (questionId: number, value: string) => void;
 };
+
 const Question: React.FC<QuestionProps> = ({
   question,
   answers,
