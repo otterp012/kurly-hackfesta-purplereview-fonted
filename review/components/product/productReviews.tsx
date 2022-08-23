@@ -26,10 +26,10 @@ const ProductReview: React.FC<ProductReviewProps> = ({
     <div className='flex flex-col pt-1 px-2'>
       <div className='flex flex-col h-[120px]'>
         <div className='flex justify-between items-end'>
-          <span className='w-40 text-lg text-start font-bold text-black'>
+          <span className='w-[60%] text-md text-start font-bold text-black'>
             {question}
           </span>
-          <span className='text-lg ml-5 text-primary font-bold'>
+          <span className='text-sm text-primary font-bold'>
             {answerlist[maxIdx]} {parsedAnswerRatio[maxIdx]}%
           </span>
         </div>
