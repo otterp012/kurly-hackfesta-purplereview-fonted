@@ -28,17 +28,20 @@ const ProductCard: React.FC<ProductCardProps> = ({
               pathname === "/review" && "border-[#d1d5db] border"
             }`}
           >
-            <div className='w-[25%] h-full px-2 py-3'>
+            <div className='w-[25%] px-2 py-3'>
               <Image
                 src={imgUrl}
                 alt={title}
-                width={300}
-                height={380}
+                width={8}
+                height={10}
+                layout='responsive'
                 objectFit='cover'
               />
             </div>
             <div className='flex flex-col py-3 w-[75%]'>
-              <h3 className='text-sm text-black min-h-[45%]'>{title}</h3>
+              <h3 className='text-sm text-black min-h-[45%] line-clamp-2'>
+                {title}
+              </h3>
               <div>
                 <span className='text-md font-bold text-black mr-2'>
                   {price.toLocaleString("ko-kr")}원

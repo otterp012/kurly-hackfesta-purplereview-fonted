@@ -15,17 +15,17 @@ const Product: React.FC<ProductDetailProps> = ({
 }) => {
   return (
     <section className='w-full h-100'>
-      <div className='w-full h-80 px-2 py-3'>
+      <div className='w-full px-2 py-3'>
         <Image
           src={img}
           alt={title}
-          width={400}
-          height={350}
-          objectFit='cover'
+          width={120}
+          height={120}
+          layout='responsive'
         />
       </div>
 
-      <div className='flex flex-col w-full px-2 mt-2'>
+      <div className='flex flex-col w-full px-2 mt-3'>
         <span className='text-sm text-lightGray'>샛별 배송</span>
         <h3 className='text-2xl font-bold mb-2 text-black line-clamp-2'>
           {title}
