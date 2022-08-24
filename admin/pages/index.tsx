@@ -8,10 +8,16 @@ import BigLogo from "../components/layout/BigLogo";
 
 import { DATA_END_POINT, END_POINT_QUERY } from "../constants/constants";
 import { fetcher } from "../lib/lib";
+import { useEffect } from "react";
+import { useRouter } from "next/router";
 
 const Home: NextPage = ({
   allProductsById,
 }: InferGetStaticPropsType<typeof getStaticProps>) => {
+  const router = useRouter();
+  useEffect(() => {
+    router.push("/reviewByProduct/1");
+  }, []);
   return (
     <div className='min-h-screen w-[1140px] bg-main py-3 px-5 flex flex-col items-center justify-center'>
       <div className='min-h-[80vh] flex flex-col'>
