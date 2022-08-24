@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Head from "next/head";
 
 import type { NextPage } from "next";
 import type { GetStaticProps, InferGetStaticPropsType } from "next";
